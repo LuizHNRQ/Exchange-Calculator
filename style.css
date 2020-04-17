@@ -97,3 +97,9 @@ button:focus {
   font-size: 10px;
   color: rgb(59, 121, 90);
 }
+
+#amount-two::-webkit-outer-spin-button,
+#amount-two::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin-right: 10px;
+}

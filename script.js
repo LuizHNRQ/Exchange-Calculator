@@ -7,25 +7,42 @@ const rateElement = document.querySelector('#rate');
 const swap = document.querySelector('#swap');
 
 //Featch echange rate and update the DOM
+
+let globalData;
+
+fetch(`https://api.exchangerate-api.com/v6/latest`)
+  .then(response => response.json())
+  .then(data => {
+
+    globalData = data;
+
+    const currencyList = Object.keys(data.rates);
+
+    currencyList.forEach(obj => {
+      currency1.innerHTML += `<option value="${obj}">${obj}</option>`;
+      if (obj === 'BRL') {
+        currency2.innerHTML += `<option value="${obj}"selected >${obj}</option>`;
+        return;
+      }
+      currency2.innerHTML += `<option value="${obj}">${obj}</option>`;
+    });
+
+    calculate();
+
+  });
+
+
 function calculate() {
   const cur_one = currency1.value;
   const cur_two = currency2.value;
 
-  fetch(`https://api.exchangerate-api.com/v4/latest/${cur_one}`)
-    .then(response => response.json())
-    .then(data => {
-      //console.log(data);
-      const rate = data.rates[cur_two];
-      console.log(rate);
-
-      rateElement.innerText = `1 ${cur_one} = ${rate} ${cur_two}`;
-
-      amount2.value = (amount1.value * rate).toFixed(3);
-
-    });
-
+  console.log(globalData);
+  const rate = globalData.rates[cur_two];
+  rateElement.innerText = `1 ${cur_one} = ${rate} ${cur_two}`;
+  if (amount2.value !== '') {
+    amount2.value = (amount1.value * rate).toFixed(3);
+  }
 };
-
 
 //Event Listners
 
@@ -39,5 +56,3 @@ swap.addEventListener('click', () => {
   currency1.value = aux;
   calculate();
 });
-
-calculate();
