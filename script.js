@@ -6,10 +6,10 @@ const amount2 = document.querySelector('#amount-two');
 const rateElement = document.querySelector('#rate');
 const swap = document.querySelector('#swap');
 
-//Featch echange rate and update the DOM
+//save to global
 
 let globalData;
-
+//Featch echange rate and update the DOM
 fetch(`https://api.exchangerate-api.com/v6/latest`)
   .then(response => response.json())
   .then(data => {
@@ -31,17 +31,23 @@ fetch(`https://api.exchangerate-api.com/v6/latest`)
 
   });
 
+//calculate the value using the rate provided by the API
 
 function calculate() {
+
   const cur_one = currency1.value;
   const cur_two = currency2.value;
 
-  console.log(globalData);
   const rate = globalData.rates[cur_two];
   rateElement.innerText = `1 ${cur_one} = ${rate} ${cur_two}`;
+
+  console.log(amount1.value);
+  console.log(amount2.value);
+
   if (amount2.value !== '') {
-    amount2.value = (amount1.value * rate).toFixed(3);
+    amount2.value = (amount1.value * rate).toFixed(2);
   }
+
 };
 
 //Event Listners
@@ -50,9 +56,12 @@ currency1.addEventListener('change', calculate);
 amount1.addEventListener('input', calculate);
 currency2.addEventListener('change', calculate);
 amount2.addEventListener('input', calculate);
+
 swap.addEventListener('click', () => {
+
   const aux = currency2.value;
   currency2.value = currency1.value;
   currency1.value = aux;
+
   calculate();
 });
